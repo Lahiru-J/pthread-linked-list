@@ -15,7 +15,7 @@ float m_member, m_insert, m_delete;
 int member_count, insert_count, delete_count;
 int curr_op;
 pthread_t *thread_handles;
-pthread_mutex_t lock, timeLock;
+pthread_mutex_t lock, time_lock;
 int *ops_order;
 
 double total_time;
@@ -40,7 +40,7 @@ int main(int argCount, char *args[])
   init_linked_list();
 
   pthread_mutex_init(&lock, NULL);
-  pthread_mutex_init(&timeLock, NULL);
+  pthread_mutex_init(&time_lock, NULL);
 
   curr_op = 0;
 
@@ -151,8 +151,8 @@ void *perform_op(void *param)
       proceed = 0;
     }
 
-    pthread_mutex_lock(&timeLock);
+    pthread_mutex_lock(&time_lock);
     total_time += (finished - start);
-    pthread_mutex_unlock(&timeLock);
+    pthread_mutex_unlock(&time_lock);
   }
 }

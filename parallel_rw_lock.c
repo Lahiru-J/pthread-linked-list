@@ -13,9 +13,10 @@ long m, thread_count;
 float m_member, m_insert, m_delete;
 int member_count, insert_count, delete_count;
 pthread_rwlock_t rwlock;
-// pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lock, time_lock;
 double total_time;
 int *cases;
+int curr_op;
 
 void get_args();
 void init_linked_list();
@@ -28,12 +29,16 @@ int main(int argCount, char *args[])
   init_linked_list();
 
   get_args(argCount, args);
-  cases = malloc(thread_count * sizeof(pthread_t));
+  cases = malloc(sizeof(int) * m);
   GET_OPERATION_ARRAY(m, member_count, insert_count, delete_count, cases);
   thread_handles = (pthread_t*) malloc (thread_count*sizeof(pthread_t)); 
 
   printf("Node count: %ld\nTotal Operations: %ld\nMember Operations: %d\nInsert Operations: %d\nDelete Operations: %d\n\n",
          node_count, m, member_count, insert_count, delete_count);
+
+  pthread_mutex_init(&lock, NULL);
+  pthread_mutex_init(&time_lock, NULL);
+  pthread_rwlock_init(&rwlock, NULL);
 
   for (thread = 0; thread < thread_count; thread++) {
       pthread_create(&thread_handles[thread], NULL,
@@ -44,21 +49,39 @@ int main(int argCount, char *args[])
     pthread_join(thread_handles[thread], NULL); 
   }
 
+  free(thread_handles);
+  free(cases);
+
+  printf("Average time: %f\n", total_time/m);
+
   return 1;
 }
 
 void* Perform_Operations(void* rank) {
   int i;
+  int proceed = 1;
 
-  for (i = 0; i < m; ++i)
+  while (proceed)
   {
+    int tmp_position;
+
+    pthread_mutex_lock(&lock);
+    tmp_position = curr_op;
+    if (curr_op >= m)
+    {
+      proceed = 0;
+
+    } else {
+      curr_op++;
+    }
+    pthread_mutex_unlock(&lock);
+
     double start, finished;
-    int case_now = cases[i];
+    int case_now = cases[tmp_position];
 
     switch (case_now) {
 
       case 0: // Member Operation
-              // printf("Member Function m = %ld\n", i);
           GET_TIME(start);
           pthread_rwlock_rdlock(&rwlock);
           Member(rand() % 65536, head);
@@ -68,7 +91,6 @@ void* Perform_Operations(void* rank) {
         break;
 
       case 1: // Insert Operation
-        // printf("Insert Function i = %d\n", i);
           GET_TIME(start);
           pthread_rwlock_wrlock(&rwlock);
           Insert(rand() % 65536, &head);
@@ -77,8 +99,7 @@ void* Perform_Operations(void* rank) {
 
         break;
 
-      case 2: // Delete Operation
-        // printf("Delete Function i = %d\n", i);
+      case 2: // Delete Operation;
           GET_TIME(start);
           pthread_rwlock_wrlock(&rwlock);
           Delete(rand() % 65536, &head);
@@ -90,11 +111,12 @@ void* Perform_Operations(void* rank) {
       default:
         printf("default case");
     }
-
+    pthread_mutex_lock(&time_lock);
     total_time += (finished - start);
+    pthread_mutex_unlock(&time_lock);
   }
 
-  printf("Average time: %f\n", total_time/m);
+  return NULL;
 }
 
 void get_args(int argc, char *argv[])
