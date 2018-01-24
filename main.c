@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include "linked_list.h"
 #include "timer.h"
+#include "util.h"
 
 long node_count;
 list_node *head;
@@ -28,21 +29,22 @@ int main(int argCount, char *args[])
   init_linked_list();
 
   int i;
-  int cases[] = {0, 1, 2};
-  int array_length = 3;
+  int cases[m];
+  GET_OPERATION_ARRAY(m, member_count, insert_count, delete_count, cases);
+
+  int j = 0;
+
+    printf("value of operation array\n");
+  for (j = 0; j < m; j++)
+  {
+    printf("%d, ",cases[j]);
+  }
+
 
   for (i = 0; i < m; ++i)
   {
     double start, finished;
-    int case_now ;
-    if (array_length != 0){
-      case_now = cases[rand() % array_length];
-      
-    }
-    else{
-      printf("i=%d", i);
-      continue;
-    }
+    int case_now = cases[i];
 
     switch (case_now) {
 
