@@ -3,7 +3,12 @@
 #include <stdlib.h>
 #include "linked_list.h"
 
-
+/*
+ * Function:    Member
+ * Purpose:     check whther the <code>value</code> is available
+ * In args:     value and head
+ * Returns:     1 if value exists or 0 otherwise
+ */
 int Member( int value, list_node * head_p ){
     list_node * curr_p = head_p;
 
@@ -17,6 +22,12 @@ int Member( int value, list_node * head_p ){
     }
 }
 
+/*
+ * Function:    Insert
+ * Purpose:     insert a new node to the linked list with given <code>value</code>
+ * In args:     value should be inserted and head
+ * Returns:     1 if insertion success and 0 if fails
+ */
 int Insert( int value, list_node** head_pp ){
     list_node * curr_p = *head_pp;
     list_node * pred_p = NULL;
@@ -42,6 +53,12 @@ int Insert( int value, list_node** head_pp ){
     }
 }
 
+/*
+ * Function:    Delete
+ * Purpose:     delete an element from the linked list
+ * In args:     value should deleted and head
+ * Returns:     1 if delete success or 0 otherwise
+ */
 int Delete ( int value, list_node** head_pp ) {
     list_node * curr_p = *head_pp;
     list_node * pred_p = NULL;

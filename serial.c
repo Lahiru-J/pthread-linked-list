@@ -40,7 +40,6 @@ int main(int argCount, char *args[])
     switch (case_now) {
 
       case 0: // Member Operation
-              // printf("Member Function m = %ld\n", i);
           GET_TIME(start);
           Member(rand() % 65536, head);
           GET_TIME(finished);
@@ -48,7 +47,6 @@ int main(int argCount, char *args[])
         break;
 
       case 1: // Insert Operation
-        // printf("Insert Function i = %d\n", i);
           GET_TIME(start);
           Insert(rand() % 65536, &head);
           GET_TIME(finished);
@@ -56,7 +54,6 @@ int main(int argCount, char *args[])
         break;
 
       case 2: // Delete Operation
-        // printf("Delete Function i = %d\n", i);
           GET_TIME(start);
           Delete(rand() % 65536, &head);
           GET_TIME(finished);
@@ -70,7 +67,7 @@ int main(int argCount, char *args[])
     total_time += (finished - start);
   }
 
-  printf("Average time: %f\n", total_time/m);
+  printf("Total time: %f\n", total_time);
 
   return 1;
 }

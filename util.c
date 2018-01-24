@@ -5,6 +5,12 @@
 void swap(int *a, int *b);
 void randomize(int arr[], int n);
 
+/*
+ * Function:    GET_OPERATION_ARRAY
+ * Purpose:     generate a shuffled array which comprised with 0, 1, and 2.
+ 				0 for Member Operation
+ * In args:     m, member_count, insert_count, delete_count, and operation_array
+ */
 void GET_OPERATION_ARRAY(long m, int member_count, int insert_count, int delete_count, int *operation_array) {
 
 	int i;
@@ -25,12 +31,22 @@ void GET_OPERATION_ARRAY(long m, int member_count, int insert_count, int delete_
 	randomize(operation_array, m);
 }
 
+/*
+ * Function:    swap
+ * Purpose:     swap the given two numbers
+ * In args:     a and b
+ */
 void swap(int *a, int *b) {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
 
+/*
+ * Function:    randomize
+ * Purpose:     randomly swap the elements inside the array
+ * In args:     arr[] and n
+ */
 void randomize(int arr[], int n) {
     srand(time(NULL));
     int i;

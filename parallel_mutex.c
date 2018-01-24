@@ -7,15 +7,15 @@
 #include "timer.h"
 #include "util.h"
 
-long node_count;
-long thread_count;
-list_node *head;
-long m;
-float m_member, m_insert, m_delete;
-int member_count, insert_count, delete_count;
+long node_count;                              // total number of nodes in linked list
+long thread_count;                            // total number of threads
+list_node *head;                              // head node of the linked list
+long m;                                       // total number of Member, Insert, and Delete operations
+float m_member, m_insert, m_delete;           // percentage values for Member, Insert, and Delete operations respectively
+int member_count, insert_count, delete_count; 
 int curr_op;
 pthread_t *thread_handles;
-pthread_mutex_t lock, time_lock;
+pthread_mutex_t lock;
 int *ops_order;
 
 double total_time;
@@ -25,7 +25,6 @@ void init_linked_list();
 void *perform_op(void *param);
 
 /* main */
-
 int main(int argCount, char *args[])
 {
   srand(time(NULL));
@@ -40,7 +39,6 @@ int main(int argCount, char *args[])
   init_linked_list();
 
   pthread_mutex_init(&lock, NULL);
-  pthread_mutex_init(&time_lock, NULL);
 
   curr_op = 0;
 
@@ -54,12 +52,19 @@ int main(int argCount, char *args[])
                    perform_op, NULL);
   }
 
+  
+  double start, finished;
+
+  GET_TIME(start);
+
   for (thread = 0; thread < thread_count; thread++)
   {
     pthread_join(thread_handles[thread], NULL);
   }
 
-  printf("Average time: %f\n", (total_time / m));
+  GET_TIME(finished);
+  total_time = (finished - start);
+  printf("Total time: %f\n", (total_time));
 
   free(thread_handles);
   free(ops_order);
@@ -102,13 +107,10 @@ void *perform_op(void *param)
 
   while (proceed)
   {
-    double start, finished;
+    
 
     pthread_mutex_lock(&lock);
-
-    GET_TIME(start);
-
-    printf("curr_op: %d, ops order[curr_op]: %d\n", curr_op, ops_order[curr_op]);
+    
 
     if (curr_op < m)
     {
@@ -137,22 +139,18 @@ void *perform_op(void *param)
         printf("An error occured.");
       }
 
-      
-
       curr_op++; 
     }
     
-    GET_TIME(finished);
-
+  
     pthread_mutex_unlock(&lock);
 
     if (curr_op >= m)
     {
       proceed = 0;
     }
-
-    pthread_mutex_lock(&time_lock);
-    total_time += (finished - start);
-    pthread_mutex_unlock(&time_lock);
+    
   }
+
+  return NULL;
 }

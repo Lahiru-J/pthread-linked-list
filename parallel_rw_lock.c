@@ -7,13 +7,13 @@
 #include "timer.h"
 #include "util.h"
 
-long node_count;
+long node_count;                              // total number of nodes in linked list
 list_node *head;
-long m, thread_count;
+long m, thread_count;                         // total number of operations and threads
 float m_member, m_insert, m_delete;
 int member_count, insert_count, delete_count;
 pthread_rwlock_t rwlock;
-pthread_mutex_t lock, time_lock;
+pthread_mutex_t lock;
 double total_time;
 int *cases;
 int curr_op;
@@ -24,6 +24,7 @@ void* Perform_Operations(void* rank);
 
 int main(int argCount, char *args[])
 {
+  srand(time(NULL));
   long thread;  
   pthread_t* thread_handles;
   init_linked_list();
@@ -37,7 +38,6 @@ int main(int argCount, char *args[])
          node_count, m, member_count, insert_count, delete_count);
 
   pthread_mutex_init(&lock, NULL);
-  pthread_mutex_init(&time_lock, NULL);
   pthread_rwlock_init(&rwlock, NULL);
 
   for (thread = 0; thread < thread_count; thread++) {
@@ -45,20 +45,26 @@ int main(int argCount, char *args[])
         Perform_Operations, (void*)thread);  
   } 
 
+  double start, finished;
+
+  GET_TIME(start);
+
   for (thread = 0; thread < thread_count; thread++) {
     pthread_join(thread_handles[thread], NULL); 
   }
 
+  GET_TIME(finished);
+
   free(thread_handles);
   free(cases);
 
-  printf("Average time: %f\n", total_time/m);
+  total_time = (finished - start);
+  printf("Total time: %f\n", total_time);
 
   return 1;
 }
 
 void* Perform_Operations(void* rank) {
-  int i;
   int proceed = 1;
 
   while (proceed)
@@ -67,53 +73,46 @@ void* Perform_Operations(void* rank) {
 
     pthread_mutex_lock(&lock);
     tmp_position = curr_op;
-    if (curr_op >= m)
+    if (curr_op < m)
     {
-      proceed = 0;
+      curr_op++;
 
     } else {
-      curr_op++;
+      proceed = 0;
     }
     pthread_mutex_unlock(&lock);
-
-    double start, finished;
+    
     int case_now = cases[tmp_position];
 
     switch (case_now) {
 
       case 0: // Member Operation
-          GET_TIME(start);
+          
           pthread_rwlock_rdlock(&rwlock);
           Member(rand() % 65536, head);
           pthread_rwlock_unlock(&rwlock);
-          GET_TIME(finished);
+          // printf("read\n");        
 
         break;
 
       case 1: // Insert Operation
-          GET_TIME(start);
           pthread_rwlock_wrlock(&rwlock);
           Insert(rand() % 65536, &head);
           pthread_rwlock_unlock(&rwlock);
-          GET_TIME(finished);
-
+          // printf("insert\n");
         break;
 
       case 2: // Delete Operation;
-          GET_TIME(start);
           pthread_rwlock_wrlock(&rwlock);
           Delete(rand() % 65536, &head);
           pthread_rwlock_unlock(&rwlock);
-          GET_TIME(finished);
-
+          // printf("delete\n");
         break;
 
       default:
         printf("default case");
     }
-    pthread_mutex_lock(&time_lock);
-    total_time += (finished - start);
-    pthread_mutex_unlock(&time_lock);
+    
   }
 
   return NULL;
@@ -121,8 +120,8 @@ void* Perform_Operations(void* rank) {
 
 void get_args(int argc, char *argv[])
 {
-  thread_count = strtol(argv[1], NULL, 10);  
-  node_count = strtol(argv[2], NULL, 10);
+  node_count = strtol(argv[1], NULL, 10);  
+  thread_count = strtol(argv[2], NULL, 10);
   m = strtol(argv[3], NULL, 10);
   m_member = atof(argv[4]);
   m_insert = atof(argv[5]);
@@ -135,7 +134,6 @@ void get_args(int argc, char *argv[])
 
 void init_linked_list()
 {
-  srand(time(NULL));
   int j;
   for (j = 0; j < node_count; j++)
   {
