@@ -39,6 +39,7 @@ int main(int argCount, char *args[])
 
   pthread_mutex_init(&lock, NULL);
   pthread_rwlock_init(&rwlock, NULL);
+  curr_op = 0;
 
   for (thread = 0; thread < thread_count; thread++) {
       pthread_create(&thread_handles[thread], NULL,
@@ -67,22 +68,21 @@ int main(int argCount, char *args[])
 void* Perform_Operations(void* rank) {
   int proceed = 1;
 
-  while (proceed)
+  while (curr_op < m)
   {
     int tmp_position;
 
     pthread_mutex_lock(&lock);
     tmp_position = curr_op;
-    if (curr_op < m)
-    {
-      curr_op++;
-
-    } else {
-      proceed = 0;
-    }
+    curr_op++;
     pthread_mutex_unlock(&lock);
     
+    if(tmp_position >= m){
+      break;
+    }
+    
     int case_now = cases[tmp_position];
+    // printf("tem %d\n", case_now);
 
     switch (case_now) {
 
