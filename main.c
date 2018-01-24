@@ -32,15 +32,6 @@ int main(int argCount, char *args[])
   int cases[m];
   GET_OPERATION_ARRAY(m, member_count, insert_count, delete_count, cases);
 
-  int j = 0;
-
-    printf("value of operation array\n");
-  for (j = 0; j < m; j++)
-  {
-    printf("%d, ",cases[j]);
-  }
-
-
   for (i = 0; i < m; ++i)
   {
     double start, finished;
