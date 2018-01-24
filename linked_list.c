@@ -35,7 +35,7 @@ int Insert( int value, list_node** head_pp ){
             *head_pp = temp_p;
         else
             pred_p->next = temp_p;
-        printf("Added value: %d\n", value);
+        // printf("Added value: %d\n", value);
         return 1;
     } else {
         return 0;

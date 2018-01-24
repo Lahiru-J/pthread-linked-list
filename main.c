@@ -14,12 +14,15 @@ int member_count, insert_count, delete_count;
 
 void get_args();
 
-void main(int argCount, char * args[]){
+int main(int argCount, char * args[]){
   srand(time(NULL));
   get_args(argCount, args);
 
-  printf("Node count: %ld\nTotal Operations: %d\nMember Operations: %d\nInsert Operations: %d\nDelete Operations: %d\n\n",
+  printf("Node count: %ld\nTotal Operations: %ld\nMember Operations: %d\nInsert Operations: %d\nDelete Operations: %d\n\n",
    node_count, m, member_count, insert_count, delete_count);
+
+
+  init_linked_list(); 
 
   int i;
   int cases[] = {0, 1, 2};
@@ -27,14 +30,16 @@ void main(int argCount, char * args[]){
   
   for (i = 0; i < m; ++i)
   {
-      printf("Inside for loop");
-      switch(cases[rand() % array_length]) {
-      printf("Inside switch");
-        case 0 : // Member Operation
+      int case_now = cases[rand() % array_length];
 
+      switch ( case_now ) {
+
+
+        case 0 : // Member Operation
+        // printf("Member Function m = %ld\n", i);
           if (member_count > 0) {
-            Member(rand() % 65536, &head);
-            printf("Member Function m = %ld\n", m);
+            Member(rand() % 65536, head);
+            
             member_count -= 1;
 
           } else if (array_length > 0) {
@@ -43,13 +48,16 @@ void main(int argCount, char * args[]){
           break;
 
         case 1 :  // Insert Operation
-
+        printf("Insert Function i = %ld\n", i);
           if (insert_count > 0) {
             int succeeded;
+            int rand_val;
             while (!succeeded) {
-              succeeded = Insert(rand() % 65536, &head);
+              srand(time(NULL));
+              rand_val = (rand() % 65536);
+              succeeded = Insert(rand_val, &head);
             }
-            printf("Insert Function m = %ld\n", m);
+            printf("insert value: %d\n", rand_val);
             insert_count -= 1;
 
           } else if (array_length > 0){
@@ -58,21 +66,26 @@ void main(int argCount, char * args[]){
           break;
         
         case 2 :  // Delete Operation
+        printf("Delete Function i = %ld\n", i);
 
           if (delete_count > 0) {
             int succeeded;
-            while (!succeeded) {
+            // while (!succeeded) {
               succeeded = Delete(rand() % 65536, &head);
-            }
-            printf("Delete Function m = %ld\n", m);
+            // }
+
             delete_count -= 1;
 
           } else if (array_length > 0){
             array_length -= 1;
           }
           break;
+        default:
+          printf("default case");
       }
   }
+
+  return 1;
 }
 
 void get_args(int argc, char* argv[]) {
@@ -88,12 +101,12 @@ void get_args(int argc, char* argv[]) {
  }
 
  void init_linked_list() {
-    int i;
-    for (i = 0; i < node_count; i++){
+    int j;
+    for (j = 0; j < node_count; j++){
     int succeeded = 0;
 
     while (!succeeded){
-        succeeded = Insert((rand()%(65535)), &head);
+        succeeded = Insert((rand()%(65536)), &head);
     }
   }
  }
