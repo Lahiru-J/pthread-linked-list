@@ -1,10 +1,9 @@
-#ifndef _UTIL_
-#define _UTIL_
-
 #include <stdlib.h>
 #include <stdio.h>
 
-#define GET_OPERATION_ARRAY(long m, int member_count, int insert_count, int delete_count, int *operation_array) {
+void shuffle(int *array, int n);
+
+void GET_OPERATION_ARRAY(long m, int member_count, int insert_count, int delete_count, int *operation_array) {
 
 	// int operation_array[m+1];
 	for (int i = 0; i < m; ++i) {
@@ -37,5 +36,3 @@ void shuffle(int *array, int n)
         }
     }
 }  
-
-#endif

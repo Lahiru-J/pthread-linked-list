@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include "linked_list.h"
 #include "timer.h"
+#include "util.h"
 
 long node_count;
 list_node *head;
@@ -28,78 +29,57 @@ int main(int argCount, char *args[])
   init_linked_list();
 
   int i;
-  int cases[] = {0, 1, 2};
-  int array_length = 3;
+  int cases[m];
+  GET_OPERATION_ARRAY(m, member_count, insert_count, delete_count, cases);
+
+  int j = 0;
+
+    printf("value of operation array\n");
+  for (j = 0; j < m; j++)
+  {
+    printf("%d, ",cases[j]);
+  }
+
 
   for (i = 0; i < m; ++i)
   {
     double start, finished;
-    int case_now ;
-    if (array_length != 0){
-      case_now = cases[rand() % array_length];
-      
-    }
-    else{
-      printf("i=%d", i);
-      continue;
-    }
+    int case_now = cases[i];
 
-    switch (case_now)
-    {
+    switch (case_now) {
 
-    case 0: // Member Operation
-            // printf("Member Function m = %ld\n", i);
-      if (member_count > 0)
-      {
-        GET_TIME(start);
-        Member(rand() % 65536, head);
-        GET_TIME(finished);
-        member_count -= 1;
-      }
-      else if (array_length > 1)
-      {
-        array_length -= 1;
-      }
-      break;
+      case 0: // Member Operation
+              // printf("Member Function m = %ld\n", i);
+          GET_TIME(start);
+          Member(rand() % 65536, head);
+          GET_TIME(finished);
 
-    case 1: // Insert Operation
-      // printf("Insert Function i = %d\n", i);
-      if (insert_count > 0)
-      {
-        GET_TIME(start);
-        Insert(rand() % 65536, &head);
-        GET_TIME(finished);
-        insert_count -= 1;
-      }
-      else if (array_length > 1)
-      {
-        array_length -= 1;
-      }
-      break;
+        break;
 
-    case 2: // Delete Operation
-      // printf("Delete Function i = %d\n", i);
+      case 1: // Insert Operation
+        // printf("Insert Function i = %d\n", i);
+          GET_TIME(start);
+          Insert(rand() % 65536, &head);
+          GET_TIME(finished);
 
-      if (delete_count > 0)
-      {
-        GET_TIME(start);
-        Delete(rand() % 65536, &head);
-        GET_TIME(finished);
-        delete_count -= 1;
-      }
-      else if (array_length > 1)
-      {
-        array_length -= 1;
-      }
-      break;
-    default:
-      printf("default case");
+        break;
+
+      case 2: // Delete Operation
+        // printf("Delete Function i = %d\n", i);
+          GET_TIME(start);
+          Delete(rand() % 65536, &head);
+          GET_TIME(finished);
+
+        break;
+
+      default:
+        printf("default case");
     }
 
     total_time += (finished - start);
   }
 
-  printf("Average time: %f", total_time);
+  printf("Average time: %f\n", total_time/m);
 
   return 1;
 }
