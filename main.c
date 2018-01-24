@@ -44,62 +44,40 @@ int main(int argCount, char *args[])
       continue;
     }
 
-    switch (case_now)
-    {
+    switch (case_now) {
 
-    case 0: // Member Operation
-            // printf("Member Function m = %ld\n", i);
-      if (member_count > 0)
-      {
-        GET_TIME(start);
-        Member(rand() % 65536, head);
-        GET_TIME(finished);
-        member_count -= 1;
-      }
-      else if (array_length > 1)
-      {
-        array_length -= 1;
-      }
-      break;
+      case 0: // Member Operation
+              // printf("Member Function m = %ld\n", i);
+          GET_TIME(start);
+          Member(rand() % 65536, head);
+          GET_TIME(finished);
 
-    case 1: // Insert Operation
-      // printf("Insert Function i = %d\n", i);
-      if (insert_count > 0)
-      {
-        GET_TIME(start);
-        Insert(rand() % 65536, &head);
-        GET_TIME(finished);
-        insert_count -= 1;
-      }
-      else if (array_length > 1)
-      {
-        array_length -= 1;
-      }
-      break;
+        break;
 
-    case 2: // Delete Operation
-      // printf("Delete Function i = %d\n", i);
+      case 1: // Insert Operation
+        // printf("Insert Function i = %d\n", i);
+          GET_TIME(start);
+          Insert(rand() % 65536, &head);
+          GET_TIME(finished);
 
-      if (delete_count > 0)
-      {
-        GET_TIME(start);
-        Delete(rand() % 65536, &head);
-        GET_TIME(finished);
-        delete_count -= 1;
-      }
-      else if (array_length > 1)
-      {
-        array_length -= 1;
-      }
-      break;
-    default:
-      printf("default case");
+        break;
+
+      case 2: // Delete Operation
+        // printf("Delete Function i = %d\n", i);
+          GET_TIME(start);
+          Delete(rand() % 65536, &head);
+          GET_TIME(finished);
+
+        break;
+
+      default:
+        printf("default case");
     }
 
     total_time += (finished - start);
   }
 
-  printf("Average time: %f", total_time);
+  printf("Average time: %f\n", total_time/m);
 
   return 1;
 }
