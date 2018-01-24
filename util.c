@@ -23,6 +23,7 @@ void GET_OPERATION_ARRAY(long m, int member_count, int insert_count, int delete_
 	}
 
 	randomize(operation_array, m);
+}
 
 void swap(int *a, int *b) {
     int temp = *a;
